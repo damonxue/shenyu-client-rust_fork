@@ -18,10 +18,10 @@
 use std::sync::Arc;
 
 use actix_web::{middleware, App, HttpServer, Responder};
-use shenyu_client_rust::{actix_web_impl::ShenYuRouter, IRouter};
 use shenyu_client_rust::ci::_CI_CTRL_C;
 use shenyu_client_rust::config::ShenYuConfig;
 use shenyu_client_rust::core::ShenyuClient;
+use shenyu_client_rust::{actix_web_impl::ShenYuRouter, IRouter};
 use shenyu_client_rust::{register_once, shenyu_router};
 use tokio::sync::Mutex;
 
@@ -60,13 +60,8 @@ async fn main() -> std::io::Result<()> {
         let routers = router.uri_infos();
         // register_once!(config, router, 4000);
         let mut client = {
-            let res = ShenyuClient::new(
-                config,
-                app_name,
-                routers,
-                4000,
-            );
-            res.map(|t|Mutex::new(t)).unwrap()
+            let res = ShenyuClient::new(config, app_name, routers, 4000);
+            res.map(|t| Mutex::new(t)).unwrap()
         };
         client.get_mut().register().expect("Failed to register");
         let client = Arc::new(client).clone();
