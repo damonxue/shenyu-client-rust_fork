@@ -1,0 +1,124 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Launch",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--features=actix-web,axum",
+                    "--bin=abuild_client",
+                    "--package=tests_axum"
+                ],
+                "filter": {
+                    "name": "actix-web-example",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'actix-web-example'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=actix-web-example",
+                    "--package=actix-web-example"
+                ],
+                "filter": {
+                    "name": "actix-web-example",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'actix-web-example'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=actix-web-example",
+                    "--package=actix-web-example"
+                ],
+                "filter": {
+                    "name": "actix-web-example",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "RUST_BACKTRACE":"1"
+            }
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in library 'shenyu_client_rust'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--lib",
+                    "--package=shenyu-client-rust"
+                ],
+                "filter": {
+                    "name": "shenyu_client_rust",
+                    "kind": "lib"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'axum-example'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=axum-example",
+                    "--package=axum-example"
+                ],
+                "filter": {
+                    "name": "axum-example",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'axum-example'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=axum-example",
+                    "--package=axum-example"
+                ],
+                "filter": {
+                    "name": "axum-example",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}

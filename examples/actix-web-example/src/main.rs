@@ -15,11 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
+use std::sync::Arc;
+
 use actix_web::{middleware, App, HttpServer, Responder};
-use shenyu_client_rust::actix_web_impl::ShenYuRouter;
+use shenyu_client_rust::{actix_web_impl::ShenYuRouter, IRouter};
 use shenyu_client_rust::ci::_CI_CTRL_C;
 use shenyu_client_rust::config::ShenYuConfig;
+use shenyu_client_rust::core::ShenyuClient;
 use shenyu_client_rust::{register_once, shenyu_router};
+use tokio::sync::Mutex;
 
 async fn health_handler() -> impl Responder {
     "OK"
@@ -43,7 +47,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         let mut router = ShenYuRouter::new("shenyu_client_app");
         let mut app = App::new().wrap(middleware::Logger::default());
-        let config = ShenYuConfig::from_yaml_file("config.yml").unwrap();
+        let config = ShenYuConfig::from_yaml_file("shenyu-client-rust/config.yml").unwrap();
         // fixme the handler method name, should be `actix-web-example::health_handler`
         shenyu_router!(
             router,
@@ -52,7 +56,28 @@ async fn main() -> std::io::Result<()> {
             "/create_user" => post(create_user_handler)
             "/" => get(index)
         );
-        register_once!(config, router, 4000);
+        let app_name = router.app_name();
+        let routers = router.uri_infos();
+        // register_once!(config, router, 4000);
+        let mut client = {
+            let res = ShenyuClient::new(
+                config,
+                app_name,
+                routers,
+                4000,
+            );
+            res.map(|t|Mutex::new(t)).unwrap()
+        };
+        client.get_mut().register().expect("Failed to register");
+        let client = Arc::new(client).clone();
+        actix_web::rt::spawn(async move {
+            // Add shutdown hook
+            tokio::select! {
+                _ = actix_web::rt::signal::ctrl_c() => {
+                    client.lock().await.offline_register();
+                }
+            }
+        });
 
         app
     })
