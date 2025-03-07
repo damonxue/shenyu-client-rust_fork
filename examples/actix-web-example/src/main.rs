@@ -47,7 +47,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         let mut router = ShenYuRouter::new("shenyu_client_app");
         let mut app = App::new().wrap(middleware::Logger::default());
-        let config = ShenYuConfig::from_yaml_file("shenyu-client-rust/config.yml").unwrap();
+        let config = ShenYuConfig::from_yaml_file("config.yml").unwrap();
         // fixme the handler method name, should be `actix-web-example::health_handler`
         shenyu_router!(
             router,
